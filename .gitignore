@@ -1,0 +1,65 @@
+
+# Python virtual environments
+venv/
+venv311/
+.venv/
+env/
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.ipynb_checkpoints/
+
+# Environment variables and secrets
+.env
+.env.*
+!.env.example
+
+# Logs
+*.log
+logs/
+
+# Spark temporary files
+spark-warehouse/
+metastore_db/
+derby.log/
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.bak
+
+# IDE settings
+.vscode/
+.idea/
+
+# Windows and macOS files
+Thumbs.db
+.DS_Store
+desktop.ini
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Build and distribution
+build/
+dist/
+*.egg-info/
+
+# Git temporary files
+*.swp
+*.swo
+# Generated project datasets and outputs
+data/bronze/
+data/silver/
+data/gold/
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Generated dashboard exports (keep source files)
+dashboard/static/data/

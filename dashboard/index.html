@@ -1,0 +1,302 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EpiScope | Bangladesh Disease Surveillance</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+
+<div class="app">
+
+    <aside class="sidebar">
+        <div class="brand">
+            <div class="brand-icon">E</div>
+            <div>
+                <h2>EpiScope</h2>
+                <small>PUBLIC HEALTH INTELLIGENCE</small>
+            </div>
+        </div>
+
+        <div class="nav-label">WORKSPACE</div>
+
+        <a class="nav-item active" href="#overview">▦ Overview</a>
+        <a class="nav-item" href="#map-section">◉ District Surveillance</a>
+        <a class="nav-item" href="#trends-section">⌁ Disease Trends</a>
+        <a class="nav-item" href="#alerts-section">⚠ Outbreak Alerts</a>
+        <a class="nav-item" href="#forecast-section">↗ Forecasting</a>
+        <a class="nav-item" href="#resources-section">▤ Resource Planning</a>
+
+        <div class="sidebar-bottom">
+            <div class="system-status">
+                <span class="status-dot"></span>
+                Analytical pipeline available
+            </div>
+            <small>EPISCOPE · VERSION 1.0</small>
+        </div>
+    </aside>
+
+
+    <main class="main">
+
+        <header class="topbar">
+            <div>
+                <h1>National Surveillance Overview</h1>
+                <p>Bangladesh · Disease intelligence and response planning</p>
+            </div>
+
+            <div class="topbar-right">
+                <span class="data-badge">SYNTHETIC + REAL REFERENCE DATA</span>
+                <span id="current-date"></span>
+            </div>
+        </header>
+
+
+        <section id="overview">
+
+            <div class="section-heading">
+                <div>
+                    <h2>National Overview</h2>
+                    <p>Historical surveillance dataset · 2021–2025</p>
+                </div>
+
+                <select id="disease-filter">
+                    <option value="All">All diseases</option>
+                    <option value="Dengue">Dengue</option>
+                    <option value="Diarrhoea">Diarrhoea</option>
+                    <option value="Influenza">Influenza</option>
+                    <option value="Malaria">Malaria</option>
+                    <option value="Other">Other</option>
+                </select>
+            </div>
+
+            <div class="stats-grid">
+
+                <div class="stat-card">
+                    <span>Total recorded cases</span>
+                    <h2 id="total-cases">—</h2>
+                    <small>Cleaned surveillance records</small>
+                </div>
+
+                <div class="stat-card">
+                    <span>Districts covered</span>
+                    <h2 id="total-districts">64</h2>
+                    <small>Bangladesh administrative districts</small>
+                </div>
+
+                <div class="stat-card">
+                    <span>Improved detector alerts</span>
+                    <h2 id="total-alerts">—</h2>
+                    <small>Experimental alert records</small>
+                </div>
+
+                <div class="stat-card">
+                    <span>Forecast combinations</span>
+                    <h2 id="total-forecasts">—</h2>
+                    <small>District × disease × week</small>
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <section id="map-section" class="panel">
+
+            <div class="panel-heading">
+                <div>
+                    <h2>District Surveillance Map</h2>
+                    <p>Select a district to inspect its disease statistics</p>
+                </div>
+
+                <select id="map-disease-filter">
+                    <option value="All">All diseases</option>
+                    <option value="Dengue">Dengue</option>
+                    <option value="Diarrhoea">Diarrhoea</option>
+                    <option value="Influenza">Influenza</option>
+                    <option value="Malaria">Malaria</option>
+                    <option value="Other">Other</option>
+                </select>
+            </div>
+
+            <div class="map-layout">
+                <div id="bangladesh-map"></div>
+
+                <div class="district-info">
+                    <h3 id="selected-district">Select a district</h3>
+                    <p id="district-hint">Click a district on the map.</p>
+                    <div id="district-details"></div>
+                </div>
+            </div>
+
+        </section>
+
+
+        <section id="trends-section" class="panel">
+
+            <div class="panel-heading">
+                <div>
+                    <h2>Disease Trends</h2>
+                    <p>Weekly recorded cases across Bangladesh</p>
+                </div>
+            </div>
+
+            <div class="chart-container">
+                <canvas id="trend-chart"></canvas>
+            </div>
+
+        </section>
+
+
+        <section id="alerts-section" class="panel">
+
+            <div class="panel-heading">
+                <div>
+                    <h2>Outbreak Alert Monitoring</h2>
+                    <p>Compare the original and improved experimental detectors</p>
+                </div>
+
+                <select id="detector-filter">
+                    <option value="improved">Improved detector</option>
+                    <option value="original">Original detector</option>
+                </select>
+            </div>
+
+            <div class="alert-summary">
+                <div>
+                    <span>Alert records</span>
+                    <strong id="alert-count">—</strong>
+                </div>
+
+                <div>
+                    <span>Districts affected</span>
+                    <strong id="alert-districts">—</strong>
+                </div>
+
+                <div>
+                    <span>Detection type</span>
+                    <strong id="detector-name">Improved</strong>
+                </div>
+            </div>
+
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>District</th>
+                            <th>Disease</th>
+                            <th>Week</th>
+                            <th>Cases</th>
+                            <th>Alert reason</th>
+                        </tr>
+                    </thead>
+                    <tbody id="alert-table"></tbody>
+                </table>
+            </div>
+
+            <p class="disclaimer">
+                Experimental anomaly signals, not verified public-health outbreak declarations.
+                The improved detector achieved 35/35 event recall in the synthetic evaluation,
+                but its episode-level diagnostic precision was approximately 1.67%.
+            </p>
+
+        </section>
+
+
+        <section id="forecast-section" class="panel">
+
+            <div class="panel-heading">
+                <div>
+                    <h2>Disease Forecasting</h2>
+                    <p>Historical four-week forecast · Origin: 22 December 2025</p>
+                </div>
+
+                <select id="forecast-disease">
+                    <option value="All">All diseases</option>
+                    <option value="Dengue">Dengue</option>
+                    <option value="Diarrhoea">Diarrhoea</option>
+                    <option value="Influenza">Influenza</option>
+                    <option value="Malaria">Malaria</option>
+                </select>
+            </div>
+
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>District</th>
+                            <th>Disease</th>
+                            <th>Forecast week</th>
+                            <th>Predicted cases</th>
+                            <th>Lower bound</th>
+                            <th>Upper bound</th>
+                        </tr>
+                    </thead>
+                    <tbody id="forecast-table"></tbody>
+                </table>
+            </div>
+
+            <p class="disclaimer">
+                Retrospective model output using data available through 31 December 2025.
+                These values are not current 2026 forecasts.
+            </p>
+
+        </section>
+
+
+        <section id="resources-section" class="panel">
+
+            <div class="panel-heading">
+                <div>
+                    <h2>Resource Allocation & Shortages</h2>
+                    <p>Experimental district-level resource optimization</p>
+                </div>
+            </div>
+
+            <div class="resource-summary" id="resource-summary"></div>
+
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>District</th>
+                            <th>Resource</th>
+                            <th>Demand</th>
+                            <th>Allocated</th>
+                            <th>Unmet</th>
+                            <th>Fulfilment</th>
+                        </tr>
+                    </thead>
+                    <tbody id="resource-table"></tbody>
+                </table>
+            </div>
+
+            <p class="disclaimer">
+                Facilities, inventory and demand are simulated. Resource-use coefficients
+                are illustrative assumptions, not clinical protocols. Stock is assumed
+                transferable within each district.
+            </p>
+
+        </section>
+
+
+        <footer>
+            <p>EpiScope · Big Data Surveillance, Forecasting & Response Planning</p>
+            <small>Academic prototype · Bangladesh · Version 1.0</small>
+        </footer>
+
+    </main>
+
+</div>
+
+<script src="app.js"></script>
+
+</body>
+</html>
